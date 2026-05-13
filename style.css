@@ -28,3 +28,11 @@ body {
     column-count: 1;
   }
 }
+
+#gallery img {
+  transition: transform 0.2s ease;
+}
+
+#gallery img:hover {
+  transform: scale(1.02);
+}
