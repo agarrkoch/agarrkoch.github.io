@@ -1,38 +1,5 @@
-body {
-  margin: 0;
-  background: #111;
-}
-
 #gallery {
   column-count: 3;
   column-gap: 16px;
-  padding: 16px;
-}
-
-#gallery img {
-  width: 100%;
-  margin-bottom: 16px;
-  border-radius: 10px;
-  display: block;
-  break-inside: avoid;
-}
-
-@media (max-width: 1000px) {
-  #gallery {
-    column-count: 2;
-  }
-}
-
-@media (max-width: 600px) {
-  #gallery {
-    column-count: 1;
-  }
-}
-
-#gallery img {
-  transition: transform 0.2s ease;
-}
-
-#gallery img:hover {
-  transform: scale(1.02);
+  background: red;
 }
