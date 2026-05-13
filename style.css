@@ -16,3 +16,15 @@ body {
   display: block;
   break-inside: avoid;
 }
+
+@media (max-width: 1000px) {
+  #gallery {
+    column-count: 2;
+  }
+}
+
+@media (max-width: 600px) {
+  #gallery {
+    column-count: 1;
+  }
+}
