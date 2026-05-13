@@ -11,7 +11,8 @@ body {
 
 #gallery img {
   width: 100%;
-  height: auto;
+  margin-bottom: 16px;
+  border-radius: 10px;
   display: block;
-  border-radius: 6px;
+  break-inside: avoid;
 }
