@@ -8,9 +8,13 @@ function loadImages() {
   for (let i = 0; i < 20; i++) {
     const img = document.createElement("img");
 
-    // placeholder images (swap with your real sources)
     const id = page * 20 + i;
-    img.src = `https://picsum.photos/400/300?random=${id}`;
+
+    const width = 600;
+    const height = Math.floor(Math.random() * 400 + 400); 
+    // random height = staggered feel
+
+    img.src = `https://picsum.photos/${width}/${height}?random=${id}`;
 
     gallery.appendChild(img);
   }
