@@ -9,30 +9,12 @@ body {
   padding: 16px;
 }
 
+/* uniform width is handled by column system */
 #gallery img {
   width: 100%;
+  height: auto;
+  display: block;
   margin-bottom: 16px;
   border-radius: 10px;
-  display: block;
   break-inside: avoid;
-}
-
-@media (max-width: 1000px) {
-  #gallery {
-    column-count: 2;
-  }
-}
-
-@media (max-width: 600px) {
-  #gallery {
-    column-count: 1;
-  }
-}
-
-#gallery img {
-  transition: transform 0.2s ease;
-}
-
-#gallery img:hover {
-  transform: scale(1.02);
 }
