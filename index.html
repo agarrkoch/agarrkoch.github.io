@@ -2,19 +2,38 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Archives</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Archive Gallery</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400&family=Courier+Prime&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <div id="container">
-  <div id="gallery"></div>
-  <div id="sentinel"></div>
-</div>
+  <header>
+    <h1>Archive</h1>
+    <span id="image-count"></span>
+  </header>
+
+  <main id="container">
+    <div id="gallery" role="list" aria-label="Image gallery"></div>
+
+    <div id="empty" role="status" aria-hidden="true">
+      <h2>No images found</h2>
+      <p>Make sure archive_images.json exists and contains image paths.</p>
+    </div>
+  </main>
+
+  <div id="sentinel" aria-hidden="true"></div>
+  <div id="loader" aria-live="polite">Loading&hellip;</div>
+
+  <!-- Lightbox -->
+  <div id="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer">
+    <button id="lightbox-close" aria-label="Close image viewer">&times;</button>
+    <img id="lightbox-img" src="" alt="" />
+  </div>
 
   <script src="script.js"></script>
 </body>
 </html>
-
-
