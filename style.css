@@ -3,18 +3,63 @@ body {
   background: #111;
 }
 
+/* Gallery container */
 #gallery {
   column-count: 3;
-  column-gap: 16px;
-  padding: 16px;
+  column-gap: 18px;
+  padding: 18px;
+
+  /* IMPORTANT: prevents background bleed artifacts */
+  background: #111;
+  line-height: 0;
 }
 
-/* uniform width is handled by column system */
+/* Images */
 #gallery img {
   width: 100%;
   height: auto;
   display: block;
-  margin-bottom: 16px;
-  border-radius: 10px;
+
+  /* spacing between images */
+  margin: 0 0 18px 0;
+
+  border-radius: 12px;
+
+  /* prevents breaking across columns */
   break-inside: avoid;
+
+  /* smoother rendering (helps reduce weird seams) */
+  transform: translateZ(0);
+
+  transition: transform 0.2s ease;
+}
+
+/* hover effect */
+#gallery img:hover {
+  transform: scale(1.02);
+}
+
+/* Responsive layout */
+@media (max-width: 1000px) {
+  #gallery {
+    column-count: 2;
+    column-gap: 16px;
+    padding: 16px;
+  }
+
+  #gallery img {
+    margin-bottom: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  #gallery {
+    column-count: 1;
+    column-gap: 12px;
+    padding: 12px;
+  }
+
+  #gallery img {
+    margin-bottom: 12px;
+  }
 }
