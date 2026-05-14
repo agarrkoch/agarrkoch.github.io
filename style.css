@@ -23,12 +23,10 @@ body {
   height: auto;
   display: block;
   margin-bottom: 16px;
-  border-radius: 10px;
+  border-radius: 0px;
 
   /* spacing between images */
   margin: 0 0 18px 0;
-
-  border-radius: 12px;
 
   /* prevents breaking across columns */
   break-inside: avoid;
