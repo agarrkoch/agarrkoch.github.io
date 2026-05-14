@@ -6,7 +6,7 @@ let index = 0;
 const batchSize = 20;
 
 // Load image list from JSON
-fetch("images.json")
+fetch("archive_images/images.json")
   .then(response => response.json())
   .then(data => {
     images = data;
