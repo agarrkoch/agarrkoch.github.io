@@ -10,12 +10,13 @@ body {
   align-items: flex-start;
 }
 
-/* each JS-created column */
+/* JS-created columns */
 .column {
   flex: 1;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  line-height: 0; /* prevents tiny baseline gaps */
 }
 
 /* images */
@@ -23,11 +24,16 @@ body {
   width: 100%;
   height: auto;
   display: block;
+  margin: 0; /* critical fix */
   transition: transform 0.2s ease;
+  transform-origin: center;
+  will-change: transform;
 }
 
 .column img:hover {
   transform: scale(1.02);
+  position: relative;
+  z-index: 2; /* prevents overlap glitches */
 }
 
 /* responsive */
