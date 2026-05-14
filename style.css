@@ -26,7 +26,7 @@ body {
 
 .item img {
   width: 100%;
-  border-radius: 14px;
+  border-radius: 0px;
   display: block;
 }
 
