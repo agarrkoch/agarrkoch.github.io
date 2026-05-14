@@ -1,9 +1,8 @@
 body {
   margin: 0;
-  background: #111;
+  background: white;
 }
 
-/* Gallery container */
 #gallery {
   column-count: 3;
   column-gap: 16px;
@@ -11,13 +10,10 @@ body {
   column-gap: 18px;
   padding: 18px;
 
-  /* IMPORTANT: prevents background bleed artifacts */
-  background: #111;
+  background: white;
   line-height: 0;
 }
 
-/* uniform width is handled by column system */
-/* Images */
 #gallery img {
   width: 100%;
   height: auto;
@@ -25,24 +21,19 @@ body {
   margin-bottom: 16px;
   border-radius: 0px;
 
-  /* spacing between images */
   margin: 0 0 18px 0;
 
-  /* prevents breaking across columns */
   break-inside: avoid;
 
-  /* smoother rendering (helps reduce weird seams) */
   transform: translateZ(0);
 
   transition: transform 0.2s ease;
 }
 
-/* hover effect */
 #gallery img:hover {
   transform: scale(1.02);
 }
 
-/* Responsive layout */
 @media (max-width: 1000px) {
   #gallery {
     column-count: 2;
