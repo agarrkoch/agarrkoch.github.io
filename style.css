@@ -4,27 +4,15 @@ body {
 }
 
 #gallery {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  display: flex;
   gap: 18px;
   padding: 18px;
-  background: white;
 }
 
 #gallery img {
   width: 100%;
   height: auto;
   display: block;
-  margin-bottom: 16px;
-  border-radius: 0px;
-
-  margin: 0 0 18px 0;
-
-  break-inside: avoid;
-
-  transform: translateZ(0);
-
-  transition: transform 0.2s ease;
 }
 
 #gallery img:hover {
