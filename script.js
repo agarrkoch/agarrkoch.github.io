@@ -22,9 +22,11 @@ fetch("archive_images.json")
 function loadImages() {
   for (let i = 0; i < batchSize; i++) {
     if (index >= images.length) return;
+    const image = images[index];
     const img = document.createElement("img");
-    img.src = images[index];
-    // distribute in strict order across columns
+    img.src = image.src;
+    img.width = image.width;
+    img.height = image.height;
     const colIndex = index % columns;
     columnElements[colIndex].appendChild(img);
     index++;
