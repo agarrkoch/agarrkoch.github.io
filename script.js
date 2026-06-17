@@ -3,7 +3,7 @@ const sentinel = document.getElementById("sentinel");
 let images = [];
 let index = 0;
 const batchSize = 20;
-const columns = 3;
+const columns = window.innerWidth <= 768 ? 1 : 3;
 // Create column containers
 const columnElements = Array.from({ length: columns }, () => {
   const col = document.createElement("div");
