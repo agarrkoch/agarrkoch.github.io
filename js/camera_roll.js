@@ -12,7 +12,7 @@ const columnElements = Array.from({ length: columns }, () => {
   return col;
 });
 // Load image list from JSON
-fetch("archive_images.json")
+fetch("images_archive.json")
   .then(response => response.json())
   .then(data => {
     images = data;
