@@ -1,60 +1,57 @@
-const photos = document.querySelectorAll(".pile-photo");
+const pile = document.querySelector(".photo-pile");
+
+let activePhoto = null;
+let dragging = false;
+
+let offsetX = 0;
+let offsetY = 0;
 
 let layer = 1;
-let originRect = null;
-let openScale = 1;
-let originRotation = 0;
-
-const lightbox = document.getElementById("lightbox");
-const lightboxImage = document.getElementById("lightbox-image");
-
-photos.forEach(photo => {
-
-
-    let rotation = Math.random() * 16 - 8;
-
-
-    photo.dataset.rotation = rotation;
-
-
-    photo.style.left = Math.random() * 65 + "%";
-    photo.style.top = Math.random() * 45 + "%";
-    photo.style.transform = `rotate(${rotation}deg)`;
-    photo.style.zIndex = layer++;
 
 
 
-    let dragging = false;
-    let moved = false;
+// -----------------------------
+// LOAD JSON FROM HTML ATTRIBUTE
+// -----------------------------
+
+const jsonFile = pile.dataset.json;
 
 
-    let startX;
-    let startY;
+fetch(jsonFile)
 
-    let offsetX;
-    let offsetY;
+    .then(response => response.json())
 
-
-
-    photo.addEventListener("mousedown", e => {
+    .then(images => {
 
 
-        e.preventDefault();
+        images.forEach(image => {
 
 
-        dragging = true;
-        moved = false;
+            const photo = document.createElement("div");
+
+            photo.className = "pile-photo";
 
 
-        startX = e.clientX;
-        startY = e.clientY;
+
+            const img = document.createElement("img");
+
+            img.src = image.src;
+
+            img.width = image.width;
+
+            img.height = image.height;
 
 
-        offsetX = e.clientX - photo.offsetLeft;
-        offsetY = e.clientY - photo.offsetTop;
+
+            photo.appendChild(img);
+
+            pile.appendChild(photo);
 
 
-        photo.style.zIndex = layer++;
+        });
+
+
+        initializePile();
 
 
     });
@@ -62,127 +59,137 @@ photos.forEach(photo => {
 
 
 
-    document.addEventListener("mousemove", e => {
+
+// -----------------------------
+// CREATE RANDOM PHOTO PILE
+// -----------------------------
+
+function initializePile() {
 
 
-        if(!dragging) return;
+    const photos =
+        document.querySelectorAll(".pile-photo");
 
 
 
-        let distance = Math.sqrt(
-            (e.clientX - startX)**2 +
-            (e.clientY - startY)**2
+    photos.forEach(photo => {
+
+
+
+        const rotation =
+            Math.random() * 16 - 8;
+
+
+
+        // More images = wider pile
+
+        const spread = Math.min(
+            40 + (photos.length * 8),
+            220
         );
 
 
-        if(distance > 10){
-            moved = true;
-        }
+
+        const x =
+            Math.random() * spread * 2 - spread;
+
+
+        const y =
+            Math.random() * spread * 2 - spread;
 
 
 
         photo.style.left =
-        e.clientX - offsetX + "px";
+            `calc(50% + ${x}px)`;
 
 
         photo.style.top =
-        e.clientY - offsetY + "px";
+            `calc(50% + ${y}px)`;
+
+
+
+        photo.style.transform =
+            `translate(-50%, -50%) rotate(${rotation}deg)`;
+
+
+
+        photo.style.zIndex =
+            layer++;
+
+
+
+
+        // -----------------------------
+        // START DRAG
+        // -----------------------------
+
+        photo.addEventListener("pointerdown", e => {
+
+
+            e.preventDefault();
+
+
+            activePhoto = photo;
+
+            dragging = true;
+
+
+
+            offsetX =
+                e.clientX - photo.offsetLeft;
+
+
+            offsetY =
+                e.clientY - photo.offsetTop;
+
+
+
+            photo.style.zIndex =
+                layer++;
+
+
+
+            photo.classList.add("dragging");
+
+
+
+            photo.setPointerCapture(e.pointerId);
+
+
+        });
+
 
 
     });
 
 
-
-
-    document.addEventListener("mouseup", () => {
-
-
-
-        if(dragging && !moved){
-
-
-            const image = photo.dataset.full;
-
-
-            originRect = photo.getBoundingClientRect();
-
-
-            originRotation = photo.dataset.rotation;
+}
 
 
 
-            lightboxImage.src = image;
 
 
 
-            // thumbnail size
+// -----------------------------
+// MOVE PHOTO
+// -----------------------------
 
-            lightboxImage.style.width =
-(photo.querySelector("img").getBoundingClientRect().width) + "px";
-
-lightboxImage.style.height =
-(photo.querySelector("img").getBoundingClientRect().height) + "px";
+document.addEventListener("pointermove", e => {
 
 
-
-            const startX =
-            originRect.left -
-            (window.innerWidth / 2 - originRect.width / 2);
-
-
-            const startY =
-            originRect.top -
-            (window.innerHeight / 2 - originRect.height / 2);
+    if (!dragging || !activePhoto)
+        return;
 
 
 
-            // start tilted like the photo
-
-            lightboxImage.style.transform =
-            `
-            translate(${startX}px, ${startY}px)
-            scale(1)
-            rotate(${originRotation}deg)
-            `;
+    activePhoto.style.left =
+        `${e.clientX - offsetX}px`;
 
 
 
-            lightbox.classList.add("open");
+    activePhoto.style.top =
+        `${e.clientY - offsetY}px`;
 
-
-
-            openScale =
-            Math.min(
-                (window.innerWidth * .7) / originRect.width,
-                (window.innerHeight * .75) / originRect.height
-            );
-
-
-
-            requestAnimationFrame(() => {
-
-
-                // lift photo and straighten
-
-                lightboxImage.style.transform =
-                `
-                translate(0,0)
-                scale(${openScale})
-                rotate(0deg)
-                `;
-
-
-            });
-
-
-
-        }
-
-
-        dragging = false;
-
-
-    });
 
 
 });
@@ -193,87 +200,82 @@ lightboxImage.style.height =
 
 
 
-// CLOSE
+// -----------------------------
+// DROP PHOTO
+// -----------------------------
 
-lightbox.addEventListener("click", e => {
+document.addEventListener("pointerup", () => {
 
 
-    if(e.target !== lightbox){
+    if (!dragging || !activePhoto)
         return;
+
+
+
+    activePhoto.classList.remove("dragging");
+
+
+
+    const pile =
+        activePhoto.closest(".photo-pile");
+
+
+
+    const photoRect =
+        activePhoto.getBoundingClientRect();
+
+
+
+    const pileRect =
+        pile.getBoundingClientRect();
+
+
+
+
+    const outside =
+
+        photoRect.right < pileRect.left ||
+
+        photoRect.left > pileRect.right ||
+
+        photoRect.bottom < pileRect.top ||
+
+        photoRect.top > pileRect.bottom;
+
+
+
+
+    if (outside) {
+
+
+        activePhoto.style.transition =
+            "opacity 0.3s ease, transform 0.3s ease";
+
+
+        activePhoto.style.opacity = "0";
+
+
+        activePhoto.style.transform +=
+            " scale(0.8)";
+
+
+
+        setTimeout(() => {
+
+
+            activePhoto.remove();
+
+
+        }, 300);
+
+
     }
 
 
-    if(!originRect){
-        return;
-    }
 
+    dragging = false;
 
+    activePhoto = null;
 
-    const targetX =
-    originRect.left -
-    (window.innerWidth / 2 - originRect.width / 2);
-
-
-    const targetY =
-    originRect.top -
-    (window.innerHeight / 2 - originRect.height / 2);
-
-
-
-    // force transition
-
-    lightboxImage.getBoundingClientRect();
-
-
-
-    requestAnimationFrame(() => {
-
-
-        // retrace path:
-        // center -> pile
-        // large -> thumbnail
-        // straight -> original angle
-
-        lightboxImage.style.transform =
-        `
-        translate(${targetX}px, ${targetY}px)
-        scale(1)
-        rotate(${originRotation}deg)
-        `;
-
-
-    });
-
-
-
-    setTimeout(() => {
-
-
-        lightbox.classList.remove("open");
-
-
-        lightboxImage.style.transform = "";
-
-
-        originRect = null;
-        originRotation = 0;
-
-
-    }, 5000);
-
-
-
-});
-
-
-
-
-
-
-// prevent close when clicking image
-
-lightboxImage.addEventListener("click", e => {
-
-    e.stopPropagation();
 
 });
