@@ -135,8 +135,37 @@ document.addEventListener("pointerup", () => {
     activePhoto.classList.remove("dragging");
 
 
-    dragging = false;
+    // check if photo was dragged outside the pile
+    const pile = activePhoto.closest(".photo-pile");
 
+    const photoRect = activePhoto.getBoundingClientRect();
+    const pileRect = pile.getBoundingClientRect();
+
+
+    const outside =
+        photoRect.right < pileRect.left ||
+        photoRect.left > pileRect.right ||
+        photoRect.bottom < pileRect.top ||
+        photoRect.top > pileRect.bottom;
+
+
+    if (outside) {
+
+        activePhoto.style.transition = "opacity 0.3s ease";
+
+        activePhoto.style.opacity = "0";
+
+
+        setTimeout(() => {
+
+            activePhoto.style.display = "none";
+
+        }, 300);
+
+    }
+
+
+    dragging = false;
 
     activePhoto = null;
 
