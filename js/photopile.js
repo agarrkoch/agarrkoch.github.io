@@ -1,4 +1,4 @@
-const pile = document.querySelector(".photo-pile");
+const piles = document.querySelectorAll(".photo-pile");
 
 let activePhoto = null;
 let dragging = false;
@@ -6,55 +6,61 @@ let dragging = false;
 let offsetX = 0;
 let offsetY = 0;
 
-let layer = 1;
-
 
 
 // -----------------------------
-// LOAD JSON FROM HTML ATTRIBUTE
+// LOAD EACH PHOTO PILE
 // -----------------------------
 
-const jsonFile = pile.dataset.json;
+piles.forEach(pile => {
+
+    let layer = 1;
+
+    const jsonFile = pile.dataset.json;
 
 
-fetch(jsonFile)
+    fetch(jsonFile)
 
-    .then(response => response.json())
+        .then(response => response.json())
 
-    .then(images => {
-
-
-        images.forEach(image => {
+        .then(images => {
 
 
-            const photo = document.createElement("div");
-
-            photo.className = "pile-photo";
+            images.forEach(image => {
 
 
+                const photo = document.createElement("div");
 
-            const img = document.createElement("img");
-
-            img.src = image.src;
-
-            img.width = image.width;
-
-            img.height = image.height;
+                photo.className = "pile-photo";
 
 
 
-            photo.appendChild(img);
+                const img = document.createElement("img");
 
-            pile.appendChild(photo);
+                img.src = image.src;
+
+                img.width = image.width;
+
+                img.height = image.height;
+
+
+
+                photo.appendChild(img);
+
+                pile.appendChild(photo);
+
+
+            });
+
+
+            initializePile(pile, layer);
 
 
         });
 
 
-        initializePile();
+});
 
-
-    });
 
 
 
@@ -64,24 +70,21 @@ fetch(jsonFile)
 // CREATE RANDOM PHOTO PILE
 // -----------------------------
 
-function initializePile() {
+function initializePile(pile, layer) {
 
 
     const photos =
-        document.querySelectorAll(".pile-photo");
+        pile.querySelectorAll(".pile-photo");
 
 
 
     photos.forEach(photo => {
 
 
-
         const rotation =
             Math.random() * 16 - 8;
 
 
-
-        // More images = wider pile
 
         const spread = Math.min(
             40 + (photos.length * 8),
@@ -112,9 +115,9 @@ function initializePile() {
             `translate(-50%, -50%) rotate(${rotation}deg)`;
 
 
-
         photo.style.zIndex =
             layer++;
+
 
 
 
@@ -157,7 +160,6 @@ function initializePile() {
 
 
         });
-
 
 
     });
@@ -244,7 +246,6 @@ document.addEventListener("pointerup", () => {
 
 
 
-
     if (outside) {
 
 
@@ -262,9 +263,7 @@ document.addEventListener("pointerup", () => {
 
         setTimeout(() => {
 
-
             activePhoto.remove();
-
 
         }, 300);
 
