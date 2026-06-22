@@ -1,60 +1,43 @@
 .photo-pile {
     position: relative;
     width: 50%;
-    height: 500px;
-    border: 1px solid #ddd;
+    height: var(--pile-height, 400px);
+    /*border: 1px solid #ddd;*/
 }
 
 .pile-photo {
     position: absolute;
-
     width: clamp(180px, 22vw, 250px);
-
     background: white;
-
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-
     cursor: grab;
-
     padding: 5px;
-
     user-select: none;
     -webkit-user-select: none;
     -webkit-user-drag: none;
-
     touch-action: none;
-
     transform-origin: center;
 }
-
 
 .pile-photo.dragging {
     cursor: grabbing;
 }
 
-
 .pile-photo img {
     display: block;
-
     width: 100%;
     height: auto;
-
     pointer-events: none;
 }
 
-
 .play-section {
-    min-height: 80vh;
-
+    min-height: auto;
     display: flex;
-    align-items: center;
-    justify-content: center;
-
-    gap: 80px;
-
-    padding: 80px;
+    flex-direction: column;
+    align-items: flex-start;;
+    gap: 40px;
+    padding: 40px;
 }
-
 
 .play-text {
     width: 35%;

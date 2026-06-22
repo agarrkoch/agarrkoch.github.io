@@ -37,6 +37,8 @@ piles.forEach(pile => {
             220
         );
 
+        pile.style.setProperty("--pile-height", `${spread * 2 + 100}px`);
+
 
         // Random position radiating from center
         const x =
