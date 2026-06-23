@@ -9,26 +9,47 @@ let startY = 0;
 let offsetX = 0;
 let offsetY = 0;
 
+function makeThumbnail(src) {
+
+    const parts = src.split("/");
+
+    const filename = parts.pop();
+
+    return (
+        parts.join("/") +
+        "/thm_" +
+        filename
+    );
+
+}
 
 piles.forEach(pile => {
 
+    const jsonFile = pile.dataset.json;
     let layer = 1;
 
+    fetch(jsonFile)
+        .then(response => response.json())
+        .then(images => {
+
+
+            images.forEach((image, index) => {
+
+
+                const photo = document.createElement("img");
+
+                photo.className = "pile-photo";
+                photo.src = makeThumbnail(image.src);
+
+                pile.appendChild(photo);
+
+            });
+
     const photos = pile.querySelectorAll(".pile-photo");
+    const centerPhoto = photos[0]; // first image
 
+    photos.forEach((photo, index) => {
 
-    photos.forEach(photo => {
-
-
-        const rotation =
-            Math.random() * 16 - 8;
-
-
-        photo.dataset.rotation = rotation;
-
-
-        // Dynamic pile spread:
-        // more photos = wider pile
         const baseSpread = 40;
         const spreadIncrease = 8;
 
@@ -39,30 +60,33 @@ piles.forEach(pile => {
 
         pile.style.setProperty("--pile-height", `${spread * 2 + 100}px`);
 
+        // Center image
+        if (photo === centerPhoto) {
 
-        // Random position radiating from center
-        const x =
-            Math.random() * spread * 2 - spread;
+            photo.dataset.rotation = 0;
 
-        const y =
-            Math.random() * spread * 2 - spread;
+            photo.style.left = "50%";
+            photo.style.top = "50%";
+            photo.style.transform =
+                "translate(-50%, -50%) rotate(0deg)";
 
+            photo.style.zIndex = photos.length;
+        } else {
 
-        photo.style.left =
-            `calc(50% + ${x}px)`;
+        // Other images
+        const rotation = Math.random() * 16 - 8;
+        photo.dataset.rotation = rotation;
 
-        photo.style.top =
-            `calc(50% + ${y}px)`;
+        const x = Math.random() * spread * 2 - spread;
+        const y = Math.random() * spread * 2 - spread;
 
+        photo.style.left = `calc(50% + ${x}px)`;
+        photo.style.top = `calc(50% + ${y}px)`;
 
         photo.style.transform =
             `translate(-50%, -50%) rotate(${rotation}deg)`;
 
-
-        photo.style.zIndex =
-            layer++;
-
-
+        photo.style.zIndex = layer++; }
 
         photo.addEventListener("pointerdown", e => {
 
@@ -103,7 +127,7 @@ piles.forEach(pile => {
 
 
     });
-
+});
 });
 
 
