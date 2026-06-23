@@ -10,21 +10,13 @@ let offsetX = 0;
 let offsetY = 0;
 
 function makeThumbnail(src) {
-
     const parts = src.split("/");
-
     const filename = parts.pop();
 
-    return (
-        parts.join("/") +
-        "/thm_" +
-        filename
-    );
-
+    return parts.join("/") + "/thm_" + filename;
 }
 
 piles.forEach(pile => {
-
     const jsonFile = pile.dataset.json;
     let layer = 1;
 
@@ -32,134 +24,109 @@ piles.forEach(pile => {
         .then(response => response.json())
         .then(images => {
 
-
             images.forEach((image, index) => {
-
-
                 const photo = document.createElement("img");
 
                 photo.className = "pile-photo";
                 photo.src = makeThumbnail(image.src);
 
-                pile.appendChild(photo);
+                photo.onload = () => {
+                if (photo.naturalWidth > photo.naturalHeight) {
+                    photo.classList.add("landscape");
+                } else {
+                    photo.classList.add("portrait");
+                    }
+                };
 
+                pile.appendChild(photo);
             });
 
-    const photos = pile.querySelectorAll(".pile-photo");
-    const centerPhoto = photos[0]; // first image
+            const photos = pile.querySelectorAll(".pile-photo");
+            const centerPhoto = photos[0]; // first image
+            const positions = [];
 
-    photos.forEach((photo, index) => {
+            photos.forEach((photo, index) => {
 
-        const baseSpread = 40;
-        const spreadIncrease = 8;
+                const baseSpread = 80;
+                const spreadIncrease = 8;
 
-        const spread = Math.min(
-            baseSpread + (photos.length * spreadIncrease),
-            220
-        );
+                const spread = Math.min(
+                    baseSpread + (photos.length * spreadIncrease),
+                    220
+                );
 
-        pile.style.setProperty("--pile-height", `${spread * 2 + 100}px`);
+                pile.style.setProperty("--pile-height", `${spread * 2 + 100}px`);
 
-        // Center image
-        if (photo === centerPhoto) {
+                // Center image
+                if (photo === centerPhoto) {
 
-            photo.dataset.rotation = 0;
+                    photo.dataset.rotation = 0;
 
-            photo.style.left = "50%";
-            photo.style.top = "50%";
-            photo.style.transform =
-                "translate(-50%, -50%) rotate(0deg)";
+                    photo.style.left = "50%";
+                    photo.style.top = "50%";
+                    photo.style.transform = "translate(-50%, -50%) rotate(0deg)";
 
-            photo.style.zIndex = photos.length;
-        } else {
+                    photo.style.zIndex = photos.length;
 
-        // Other images
-        const rotation = Math.random() * 16 - 8;
-        photo.dataset.rotation = rotation;
+                } else {
 
-        const x = Math.random() * spread * 2 - spread;
-        const y = Math.random() * spread * 2 - spread;
+                    // Other images
+                    const rotation = Math.random() * 16 - 8;
+                    photo.dataset.rotation = rotation;
 
-        photo.style.left = `calc(50% + ${x}px)`;
-        photo.style.top = `calc(50% + ${y}px)`;
+                    const x = Math.random() * spread * 2 - spread;
+                    const y = Math.random() * spread * 2 - spread;
 
-        photo.style.transform =
-            `translate(-50%, -50%) rotate(${rotation}deg)`;
+                    photo.style.left = `calc(50% + ${x}px)`;
+                    photo.style.top = `calc(50% + ${y}px)`;
 
-        photo.style.zIndex = layer++; }
+                    photo.style.transform =
+                    `translate(-50%, -50%) rotate(${rotation}deg)`;
 
-        photo.addEventListener("pointerdown", e => {
+                    photo.style.zIndex = layer++; }
 
+                photo.addEventListener("pointerdown", e => {
 
-            e.preventDefault();
+                    e.preventDefault();
 
+                    activePhoto = photo;
+                    dragging = true;
 
-            activePhoto = photo;
+                    startX = e.clientX;
+                    startY = e.clientY;
 
-            dragging = true;
+                    offsetX = e.clientX - photo.offsetLeft;
+                    offsetY = e.clientY - photo.offsetTop;
 
+                    photo.style.zIndex = layer++;
 
-            startX = e.clientX;
-            startY = e.clientY;
+                    photo.classList.add("dragging");
 
+                    photo.setPointerCapture(e.pointerId);
+                });
 
-
-            offsetX =
-                e.clientX - photo.offsetLeft;
-
-
-            offsetY =
-                e.clientY - photo.offsetTop;
-
-
-
-            photo.style.zIndex =
-                layer++;
-
-
-            photo.classList.add("dragging");
-
-
-            photo.setPointerCapture(e.pointerId);
-
-
+            });
         });
-
-
-    });
 });
-});
-
 
 
 document.addEventListener("pointermove", e => {
 
-
     if (!dragging || !activePhoto)
         return;
 
-
-    activePhoto.style.left =
-        `${e.clientX - offsetX}px`;
-
-
-    activePhoto.style.top =
-        `${e.clientY - offsetY}px`;
-
+    activePhoto.style.left = `${e.clientX - offsetX}px`;
+    activePhoto.style.top = `${e.clientY - offsetY}px`;
 
 });
 
 
-
 document.addEventListener("pointerup", () => {
-
 
     if (!dragging || !activePhoto)
         return;
 
-
     activePhoto.classList.remove("dragging");
-
 
     // check if photo was dragged outside the pile
     const pile = activePhoto.closest(".photo-pile");
@@ -167,33 +134,24 @@ document.addEventListener("pointerup", () => {
     const photoRect = activePhoto.getBoundingClientRect();
     const pileRect = pile.getBoundingClientRect();
 
-
     const outside =
         photoRect.right < pileRect.left ||
         photoRect.left > pileRect.right ||
         photoRect.bottom < pileRect.top ||
         photoRect.top > pileRect.bottom;
 
-
     if (outside) {
 
         activePhoto.style.transition = "opacity 0.3s ease";
-
         activePhoto.style.opacity = "0";
 
-
         setTimeout(() => {
-
             activePhoto.style.display = "none";
-
         }, 300);
 
     }
 
-
     dragging = false;
-
     activePhoto = null;
-
 
 });

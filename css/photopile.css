@@ -9,7 +9,6 @@
 
 .pile-photo {
     position: absolute;
-    width: clamp(100px, 10vw, 200px);
     background: white;
     /*box-shadow: 0 4px 15px rgba(0,0,0,0.2);*/
     cursor: grab;
@@ -19,6 +18,14 @@
     -webkit-user-drag: none;
     touch-action: none;
     transform-origin: center;
+}
+
+.pile-photo.portrait {
+    width: clamp(120px, 10vw, 200px);
+}
+
+.pile-photo.landscape {
+    width: clamp(160px, 13vw, 240px);
 }
 
 .pile-photo.dragging {
