@@ -1,7 +1,10 @@
 const piles = document.querySelectorAll(".photo-pile");
+const lightbox = document.getElementById("lightbox");
+const lightboxImage = document.getElementById("lightbox-image");
 
 let activePhoto = null;
 let dragging = false;
+let moved = false;
 
 let startX = 0;
 let startY = 0;
@@ -28,6 +31,7 @@ piles.forEach(pile => {
                 const photo = document.createElement("img");
 
                 photo.className = "pile-photo";
+                photo.origsrc = image.src;
                 photo.src = makeThumbnail(image.src);
 
                 photo.onload = () => {
@@ -95,6 +99,8 @@ piles.forEach(pile => {
                     startX = e.clientX;
                     startY = e.clientY;
 
+                    moved = false;
+
                     offsetX = e.clientX - photo.offsetLeft;
                     offsetY = e.clientY - photo.offsetTop;
 
@@ -103,6 +109,8 @@ piles.forEach(pile => {
                     photo.classList.add("dragging");
 
                     photo.setPointerCapture(e.pointerId);
+
+                    moved = false;
                 });
 
             });
@@ -117,6 +125,13 @@ document.addEventListener("pointermove", e => {
 
     activePhoto.style.left = `${e.clientX - offsetX}px`;
     activePhoto.style.top = `${e.clientY - offsetY}px`;
+
+    const dx = e.clientX - startX;
+    const dy = e.clientY - startY;
+
+    if (Math.abs(dx) > 5 || Math.abs(dy) > 5) {
+        moved = true;
+}
 
 });
 
@@ -151,7 +166,21 @@ document.addEventListener("pointerup", () => {
 
     }
 
+    if (!moved) {
+    openLightbox(activePhoto);
+}
     dragging = false;
     activePhoto = null;
+});
 
+
+function openLightbox(photo) {
+    lightboxImage.src = photo.origsrc;
+    lightbox.classList.add("open");
+}
+
+lightbox.addEventListener("click", e => {
+    if (e.target === lightbox) {
+        lightbox.classList.remove("open");
+    }
 });
